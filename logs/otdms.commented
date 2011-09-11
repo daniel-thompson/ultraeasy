@@ -1,0 +1,114 @@
+              Reset
+PC to meter:  02060803c262
+Meter to PC:  02060c0306ae
+
+              Get serial number
+PC to meter:  021200050b020000000000000000000319e7
+Meter to PC:  02060603cd41
+Meter to PC:  021102050643475741314535435203b55b
+PC to meter:  02060603cd41
+
+              Reset
+PC to meter:  02060a03a004
+Meter to PC:  02060c0306ae
+
+              Get version number
+PC to meter:  020900050d0203da71
+Meter to PC:  02060603cd41
+Meter to PC:  021a020506115030322e30302e303032352f30352f303703ab25
+PC to meter:  02060703fc72
+
+              Get serial number
+PC to meter:  021203050b0200000000000000000003ba6a
+Meter to PC:  020605039e14
+Meter to PC:  0211010506434757413145354352031094
+PC to meter:  02060403af27
+
+              Reset
+PC to meter:  02060803c262
+Meter to PC:  02060c0306ae
+
+              Get version number
+PC to meter:  020900050d0203da71
+Meter to PC:  02060603cd41
+Meter to PC:  021a020506115030322e30302e303032352f30352f303703ab25
+PC to meter:  02060703fc72
+
+              Get serial number
+PC to meter:  021203050b0200000000000000000003ba6a
+Meter to PC:  020605039e14
+Meter to PC:  0211010506434757413145354352031094
+PC to meter:  02060403af27
+
+              Reset
+PC to meter:  02060803c262
+Meter to PC:  02060c0306ae
+
+              Get version number
+PC to meter:  020900050d0203da71
+Meter to PC:  02060603cd41
+Meter to PC:  021a020506115030322e30302e303032352f30352f303703ab25
+PC to meter:  02060703fc72
+
+              Read RTC
+PC to meter:  020d030520020000000003a84c
+Meter to PC:  020605039e14
+Meter to PC:  020c0105061635654e037e0e
+PC to meter:  02060403af27
+
+              Get serial number
+PC to meter:  021200050b020000000000000000000319e7
+Meter to PC:  02060603cd41
+Meter to PC:  021102050643475741314535435203b55b
+PC to meter:  02060703fc72
+
+              Reset
+PC to meter:  02060b039137
+Meter to PC:  02060c0306ae
+
+              Get version number
+PC to meter:  020900050d0203da71
+Meter to PC:  02060603cd41
+Meter to PC:  021a020506115030322e30302e303032352f30352f303703ab25
+PC to meter:  02060703fc72
+
+              Get serial number
+PC to meter:  021203050b0200000000000000000003ba6a
+Meter to PC:  020605039e14
+Meter to PC:  0211010506434757413145354352031094
+PC to meter:  02060403af27
+
+              Reset
+PC to meter:  02060803c262
+Meter to PC:  02060c0306ae
+
+              Read current unit settings
+PC to meter:  020e00050902090000000003cee7
+Meter to PC:  02060603cd41
+Meter to PC:  020c0205060100000003716b
+PC to meter:  02060703fc72
+
+              Request invalid record number (force report of remaining items)
+PC to meter:  020a03051f0002032939
+Meter to PC:  020605039e14
+Meter to PC:  020a01050f030003fc96
+PC to meter:  02060403af27
+
+              Get sample #0
+PC to meter:  020a00051f000003ab91
+Meter to PC:  02060603cd41
+Meter to PC:  021002050695d1644ec400000003434d
+PC to meter:  02060703fc72
+
+              Get sample #1
+PC to meter:  020a03051f0100037b68
+Meter to PC:  020605039e14
+Meter to PC:  0210010506a570644e500000000368d2
+PC to meter:  02060403af27
+
+              Get sample #2
+PC to meter:  020a00051f020003cbff
+Meter to PC:  02060603cd41
+Meter to PC:  02100205066b18624eac00000003d1c2
+PC to meter:  02060703fc72
+
