@@ -76,26 +76,35 @@ int main(int argc, char *argv[])
 	int c;
 
 	bool bad_args = false;
+	bool want_nice_records = false;
 	bool want_meter_version = false;
 	bool want_meter_serial = false;
+	bool want_raw_records = false;
 
 	char *device = xstrdup("/dev/ttyUSB0");
 
 	static struct option long_options[] = {
 		{ "device", 1, 0, 'D' },
+		{ "dump", 0, 0, 'd' },
 		{ "help", 0, 0, 'h' },
 		{ "meter-version", 0, 0, 'r' },
 		{ "meter-serial", 0, 0, 's' },
+		{ "raw", 0, 0, 'R' },
+		{ "verbose", 0, 0, 'V' },
 		{ "version", 0, 0, 'v' },
 		{0, 0, 0,  0 }
 	};
 
 
-	while (-1 != (c = getopt_long(argc, argv, "D:hrsv", long_options, NULL))) {
+	while (-1 != (c = getopt_long(argc, argv, "Dd:hrsVvZ", long_options, NULL))) {
 		switch (c) {
 		case 'D': // --device
 			free(device);
 			device = xstrdup(optarg);
+			break;
+
+		case 'd': // --dump
+			want_nice_records = true;
 			break;
 
 		case 'h': // --help
@@ -110,9 +119,21 @@ int main(int argc, char *argv[])
 			want_meter_serial = true;
 			break;
 
+		case 'R': // --raw
+			want_raw_records = true;
+			break;
+
+		case 'V': // --verbose
+			trace_level++;
+			break;
+
 		case 'v': // --version
 			show_version();
 			return 0;
+
+		case 'Z': // no long opt
+			trace_level = 3;
+			break;
 
 		default:
 			bad_args = true;
@@ -136,6 +157,46 @@ int main(int argc, char *argv[])
 		show_meter_version(meter);
 	if (want_meter_serial)
 		show_meter_serial(meter);
+
+	if (want_raw_records) {
+		int n = onetouch_num_records(meter);
+		if (n < 0) {
+			fprintf(stderr, "Cannot read number of records: %s\n", strerror(errno));
+			return 11;
+		}
+
+		for (int i=0; i<n; i++) {
+			onetouch_record_t record;
+			int res = onetouch_get_record(meter, i, &record);
+			if (res < 0) {
+				fprintf(stderr, "Cannot read record %d: %s\n", i, strerror(errno));
+				return 12;
+			}
+
+			printf("Record %3d   Raw date 0x%08x   Raw reading 0x%08x\n",
+					i, record.raw.date, record.raw.reading);
+		}
+	}
+
+	if (want_nice_records) {
+		int n = onetouch_num_records(meter);
+		if (n < 0) {
+			fprintf(stderr, "Cannot read number of records: %s\n", strerror(errno));
+			return 11;
+		}
+
+		for (int i=0; i<n; i++) {
+			onetouch_record_t record;
+			int res = onetouch_get_record(meter, i, &record);
+			if (res < 0) {
+				fprintf(stderr, "Cannot read record %d: %s\n", i, strerror(errno));
+				return 12;
+			}
+
+			printf("Record %3d   Raw date 0x%08x   Reading %4.1f\n",
+					i, record.raw.date, record.mmol_per_litre);
+		}
+	}
 
 	onetouch_close(meter);
 	return 0;

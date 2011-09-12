@@ -25,13 +25,12 @@
 #include <stdlib.h>
 #include <time.h>
 
-extern int trace_level;
 
-//#define ERROR(...) fprintf(stderr, "Error - " __VA_ARGS__)
-//#define TRACE(...) fprintf(stderr, __VA_ARGS__)
-#define ERROR(fmt, ...) fprintf(stderr, "%s: Error - " fmt, __FUNCTION__, ##__VA_ARGS__)
-#define TRACE(fmt, ...) fprintf(stderr, "%s: " fmt, __FUNCTION__, ##__VA_ARGS__)
-#define DEBUG(fmt, ...) fprintf(stderr, "%s: " fmt, __FUNCTION__, ##__VA_ARGS__)
+#define ERROR(...) tracefn(0, __FUNCTION__, "Error - ", __VA_ARGS__)
+#define TRACE(...) tracefn(1, __FUNCTION__, "", __VA_ARGS__)
+#define DEBUG(...) tracefn(2, __FUNCTION__, "", __VA_ARGS__)
+extern int trace_level;
+void tracefn(int level, const char *fn, const char *prefix, const char *fmt, ...);
 
 void fatal(const char *fmt, ...);
 

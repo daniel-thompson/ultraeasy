@@ -110,6 +110,8 @@ static void dump_packet(FILE *f, const char *desc, unsigned char *p)
 {
 	unsigned int len = p[OFFSET_LEN];
 
+	if (trace_level < 3)
+		return;
 
 	char *hex = xstrdup_hexdump(p, len);
 	char *ascii = xstrdup_asciify(p, len);

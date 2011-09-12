@@ -28,6 +28,22 @@
 
 int trace_level = 0;
 
+void tracefn(int level, const char *fn, const char *prefix, const char *fmt, ...)
+{
+	va_list ap;
+
+	if (level > trace_level)
+		return;
+
+	if (trace_level <= 2)
+		fn = "onetouch";
+
+	fprintf(stderr, "%s: %s", fn, prefix);
+	va_start(ap, fmt);
+	vfprintf(stderr, fmt, ap);
+	va_end(ap);
+}
+
 void fatal(const char *fmt, ...)
 {
 	va_list ap;
