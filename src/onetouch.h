@@ -20,12 +20,14 @@
 #define ONETOUCH_H_
 
 #include <stdint.h>
+#include <time.h>
 
 #include "link.h"
 
 typedef struct onetouch onetouch_t;
 
 typedef struct onetouch_record {
+	time_t date;
 	double mmol_per_litre;
 
 	struct {
@@ -35,8 +37,9 @@ typedef struct onetouch_record {
 } onetouch_record_t;
 
 onetouch_t *onetouch_open(const char *pathname);
-char *onetouch_read_version(onetouch_t *onetouch);
+time_t onetouch_read_rtc(onetouch_t *onetouch);
 char *onetouch_read_serial(onetouch_t *onetouch);
+char *onetouch_read_version(onetouch_t *onetouch);
 int onetouch_num_records(onetouch_t *onetouch);
 int onetouch_get_record(onetouch_t *onetouch, unsigned int num, onetouch_record_t *record);
 void onetouch_close(onetouch_t *onetouch);

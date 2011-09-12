@@ -30,7 +30,8 @@ struct onetouch {
 
 static int do_command(onetouch_t *onetouch,
 		      const unsigned char *cmdstr, unsigned int cmdlen,
-		      const unsigned char *replystr, unsigned int replylen, link_msg_t *reply)
+		      const unsigned char *replystr, unsigned int replylen,
+		      unsigned int expectedlen, link_msg_t *reply)
 {
 	link_msg_t cmd;
 	int res;
@@ -54,8 +55,26 @@ static int do_command(onetouch_t *onetouch,
 		return -1;
 	}
 
+	if (0 != expectedlen) {
+		if (expectedlen != reply->len) {
+			ERROR("Expected %d byte reply but got %d bytes\n", expectedlen, reply->len);
+			errno = EPROTO;
+			return -1;
+		}
+	}
+
 	DEBUG("Good reply from meter\n");
 	return 0;
+}
+
+static uint16_t get_u16(unsigned char *p)
+{
+	return (p[1] << 8) | p[0];
+}
+
+static uint32_t get_u32(unsigned char *p)
+{
+	return (p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0];
 }
 
 onetouch_t *onetouch_open(const char *pathname)
@@ -71,6 +90,20 @@ onetouch_t *onetouch_open(const char *pathname)
 	return onetouch;;
 }
 
+time_t onetouch_read_rtc(onetouch_t *onetouch)
+{
+	const unsigned char cmdstr[] = { 0x05, 0x20, 0x02, 0x00, 0x00, 0x00, 0x00 };
+	const unsigned char replystr[] = { 0x05, 0x06 };
+
+	link_msg_t reply;
+
+	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 6, &reply);
+	if (0 != res)
+		return (time_t) -1;
+
+	return get_u32(reply.data + 2);
+}
+
 char *onetouch_read_version(onetouch_t *onetouch)
 {
 	const unsigned char cmdstr[] = { 0x05, 0x0d, 0x02 };
@@ -78,7 +111,7 @@ char *onetouch_read_version(onetouch_t *onetouch)
 
 	link_msg_t reply;
 
-	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), &reply);
+	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 0, &reply);
 	if (0 != res)
 		return NULL;
 
@@ -101,7 +134,7 @@ char *onetouch_read_serial(onetouch_t *onetouch)
 
 	link_msg_t reply;
 
-	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), &reply);
+	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 0, &reply);
 	if (0 != res)
 		return NULL;
 
@@ -118,17 +151,11 @@ int onetouch_num_records(onetouch_t *onetouch)
 	const unsigned char replystr[] = { 0x05, 0x0f };
 	link_msg_t reply;
 
-	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), &reply);
+	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 4, &reply);
 	if (0 != res)
 		return -1;
 
-	if (4 != reply.len) {
-		ERROR("Expected %d byte reply but got %d bytes\n", 4, reply.len);
-		errno = EPROTO;
-		return -1;
-	}
-
-	return (reply.data[3] << 8) | reply.data[2];
+	return get_u16(reply.data + 2);
 }
 
 int onetouch_get_record(onetouch_t *onetouch, unsigned int num, onetouch_record_t *record)
@@ -143,21 +170,14 @@ int onetouch_get_record(onetouch_t *onetouch, unsigned int num, onetouch_record_
 	cmdstr[2] = num & 0xff;
 	cmdstr[3] = (num >> 8) & 0xff;
 
-	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), &reply);
+	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 10, &reply);
 	if (0 != res)
 		return -1;
 
-	if (10 != reply.len) {
-		ERROR("Expected %d byte reply but got %d bytes\n", 10, reply.len);
-		errno = EPROTO;
-		return -1;
-	}
+	record->raw.date = get_u32(reply.data + 2);
+	record->raw.reading = get_u32(reply.data + 6);
 
-	record->raw.date = (reply.data[5] << 24) | (reply.data[4] << 16) |
-			   (reply.data[3] <<  8) | (reply.data[2]      );
-	record->raw.reading = (reply.data[9] << 24) | (reply.data[8] << 16) |
-			      (reply.data[7] <<  8) | (reply.data[6]      );
-
+	record->date = record->raw.date;
 	record->mmol_per_litre = (double) record->raw.reading / 18.0;
 
 	return 0;
