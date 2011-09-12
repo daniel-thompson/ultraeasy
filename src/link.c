@@ -402,6 +402,8 @@ int do_reset(link_t *link, bool flush)
 	link_meta_t acknowledge;
 	int res;
 
+	DEBUG("Attempting to link level reset\n");
+
 	if (flush && !link->use_facade) {
 		unsigned char flush_buffer[64];
 
@@ -433,12 +435,12 @@ int do_reset(link_t *link, bool flush)
 
 	res = rx_and_unpack(link, &acknowledge, NULL);
 	if (0 != res)
-		return -1;
+		return 1; // non-fatal
 
 	if (!acknowledge.acknowledge || !acknowledge.disconnect) {
 		TRACE("No acknowledgement from meter\n");
 		errno = ENOLINK;
-		return -1;
+		return 1; // non-fatal
 	}
 
 	return 0;
@@ -546,7 +548,7 @@ link_t *link_open(const char *pathname)
 		link->use_facade = true;
 	}
 
-	res = do_reset(link, false);
+	res = link_reset(link);
 	if (0 != res)
 		goto handle_error;
 
@@ -559,7 +561,27 @@ link_t *link_open(const char *pathname)
 
 int link_reset(link_t *link)
 {
-	return do_reset(link, true);
+	int res, retries;
+
+	// reset gets an extra retry because the first time through we don't flush
+	// stale data!
+	for (retries=0; retries<4; retries++) {
+		bool flush = (0 != retries);
+		res = do_reset(link, flush);
+
+		// do_command is tri-state, both -1 (fatal) and 0 (success) should
+		// be passed up the stack.
+		if (res <= 0)
+			return res;
+
+		// a recoverable error has occurred
+		TRACE("Recoverable error during reset (%s). Retrying...\n", strerror(errno));
+		assert(1 == res);
+	}
+
+	TRACE("Giving up after %d retries\n", retries);
+	errno = ENOLINK;
+	return -1;
 }
 
 
@@ -578,7 +600,7 @@ int link_command(link_t *link, link_msg_t *input, link_msg_t *output)
 		// a recoverable error has occurred
 		TRACE("Recoverable error during command processing (%s). Retrying...\n", strerror(errno));
 		assert(1 == res);
-		res = do_reset(link, true);
+		res = link_reset(link);
 		if (0 != res)
 			return res;
 	}
