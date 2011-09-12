@@ -19,14 +19,26 @@
 #ifndef ONETOUCH_H_
 #define ONETOUCH_H_
 
+#include <stdint.h>
+
 #include "link.h"
 
 typedef struct onetouch onetouch_t;
+
+typedef struct onetouch_record {
+	double mmol_per_litre;
+
+	struct {
+		uint32_t date;
+		uint32_t reading;
+	} raw;
+} onetouch_record_t;
 
 onetouch_t *onetouch_open(const char *pathname);
 char *onetouch_read_version(onetouch_t *onetouch);
 char *onetouch_read_serial(onetouch_t *onetouch);
 int onetouch_num_records(onetouch_t *onetouch);
+int onetouch_get_record(onetouch_t *onetouch, unsigned int num, onetouch_record_t *record);
 void onetouch_close(onetouch_t *onetouch);
 
 #endif /* ONETOUCH_H_ */
