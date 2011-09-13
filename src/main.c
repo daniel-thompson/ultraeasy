@@ -27,6 +27,58 @@
 #include "onetouch.h"
 #include "util.h"
 
+typedef void (*foreach_reading_t)(void *, onetouch_record_t *);
+
+static int foreach_reading(onetouch_t *meter, foreach_reading_t fn, void *ctx)
+{
+	int n = onetouch_num_records(meter);
+	if (n < 0) {
+		fprintf(stderr, "Cannot read number of records: %s\n", strerror(errno));
+		return -1;
+	}
+
+	for (int i=0; i<n; i++) {
+		onetouch_record_t record;
+		int res = onetouch_get_record(meter, i, &record);
+		if (res < 0) {
+			fprintf(stderr, "Cannot read record %d: %s\n", i, strerror(errno));
+			return -1;
+		}
+
+		fn(ctx, &record);
+	}
+
+	return 0;
+}
+
+static void show_raw_reading(void *ctx, onetouch_record_t *reading)
+{
+	printf("Raw date 0x%08x   Raw reading 0x%08x\n",
+			reading->raw.date, reading->raw.reading);
+}
+
+static void show_reading(void *ctx, onetouch_record_t *reading)
+{
+	struct tm exploded;
+	gmtime_r(&reading->date, &exploded);
+
+	printf("%4d-%02d-%02d %02d:%02d:%02d    %4.1f mmol/l\n",
+			exploded.tm_year + 1900, exploded.tm_mon+1, exploded.tm_mday,
+			exploded.tm_hour, exploded.tm_min, exploded.tm_sec,
+			reading->mmol_per_litre);
+}
+
+static void show_csv_reading(void *ctx, onetouch_record_t *reading)
+{
+	struct tm exploded;
+	gmtime_r(&reading->date, &exploded);
+
+	printf("\"%02d-%02d-%04d\", \"%02d:%02d:%02d\", \"%3.1f\"\n",
+				exploded.tm_mday, exploded.tm_mon+1, exploded.tm_year + 1900,
+				exploded.tm_hour, exploded.tm_min, exploded.tm_sec,
+				reading->mmol_per_litre);
+}
+
 static void show_meter_rtc(onetouch_t *meter)
 {
 	time_t local, rtc;
@@ -91,15 +143,15 @@ int main(int argc, char *argv[])
 	int c;
 
 	bool bad_args = false;
-	bool want_nice_records = false;
+
+	char *device = "/dev/ttyUSB0";
+	foreach_reading_t dumpfn = NULL;
 	bool want_meter_time = false;
 	bool want_meter_serial = false;
 	bool want_meter_version = false;
-	bool want_raw_records = false;
-
-	char *device = xstrdup("/dev/ttyUSB0");
 
 	static struct option long_options[] = {
+		{ "csv", 0, 0, 'c' },
 		{ "device", 1, 0, 'D' },
 		{ "dump", 0, 0, 'd' },
 		{ "help", 0, 0, 'h' },
@@ -113,15 +165,18 @@ int main(int argc, char *argv[])
 	};
 
 
-	while (-1 != (c = getopt_long(argc, argv, "D:dhrsVvZ", long_options, NULL))) {
+	while (-1 != (c = getopt_long(argc, argv, "cD:dhrsVvZ", long_options, NULL))) {
 		switch (c) {
+		case 'c': // --csv
+			dumpfn = show_csv_reading;
+			break;
+
 		case 'D': // --device
-			free(device);
-			device = xstrdup(optarg);
+			device = optarg;
 			break;
 
 		case 'd': // --dump
-			want_nice_records = true;
+			dumpfn = show_reading;
 			break;
 
 		case 'h': // --help
@@ -141,7 +196,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case 'R': // --raw
-			want_raw_records = true;
+			dumpfn = show_raw_reading;
 			break;
 
 		case 'V': // --verbose
@@ -181,45 +236,10 @@ int main(int argc, char *argv[])
 	if (want_meter_time)
 		show_meter_rtc(meter);
 
-
-	if (want_raw_records) {
-		int n = onetouch_num_records(meter);
-		if (n < 0) {
-			fprintf(stderr, "Cannot read number of records: %s\n", strerror(errno));
-			return 11;
-		}
-
-		for (int i=0; i<n; i++) {
-			onetouch_record_t record;
-			int res = onetouch_get_record(meter, i, &record);
-			if (res < 0) {
-				fprintf(stderr, "Cannot read record %d: %s\n", i, strerror(errno));
-				return 12;
-			}
-
-			printf("Record %3d   Raw date 0x%08x   Raw reading 0x%08x\n",
-					i, record.raw.date, record.raw.reading);
-		}
-	}
-
-	if (want_nice_records) {
-		int n = onetouch_num_records(meter);
-		if (n < 0) {
-			fprintf(stderr, "Cannot read number of records: %s\n", strerror(errno));
-			return 11;
-		}
-
-		for (int i=0; i<n; i++) {
-			onetouch_record_t record;
-			int res = onetouch_get_record(meter, i, &record);
-			if (res < 0) {
-				fprintf(stderr, "Cannot read record %d: %s\n", i, strerror(errno));
-				return 12;
-			}
-
-			printf("Record %3d   Date %s   Reading %4.1f\n",
-					i, asctime(gmtime(&record.date)), record.mmol_per_litre);
-		}
+	if (dumpfn) {
+		int res = foreach_reading(meter, dumpfn, NULL);
+		if (0 != res)
+			return 12;
 	}
 
 	onetouch_close(meter);
