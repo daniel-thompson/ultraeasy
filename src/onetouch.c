@@ -87,6 +87,17 @@ onetouch_t *onetouch_open(const char *pathname)
 		return NULL;
 	}
 
+	// Force link layer to set E & S. This is a hack to account for the fact
+	// that some of the facade data is captured from a real meter and therefore
+	// the facade only react if E & S are set. The opposite case (when facade
+	// expect E & S are clear) is no problem because the timeout and reset
+	// logic will automatically causes the bits to be cleared.
+	//
+	// Eventually we'll get the facade to understand E & S bits and then
+	// we can remove this hack.
+	if (0 == strcmp(pathname, "facade"))
+		free(onetouch_read_serial(onetouch));
+
 	return onetouch;;
 }
 
