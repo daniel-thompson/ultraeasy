@@ -147,7 +147,11 @@ char *onetouch_read_serial(onetouch_t *onetouch)
 
 int onetouch_num_records(onetouch_t *onetouch)
 {
+#if 0
 	const unsigned char cmdstr[] = { 0x05, 0x1f, 0xf5, 0x01 };
+#else
+	const unsigned char cmdstr[] = { 0x05, 0x1f, 0x00, 0x02 };
+#endif
 	const unsigned char replystr[] = { 0x05, 0x0f };
 	link_msg_t reply;
 
