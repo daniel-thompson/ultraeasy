@@ -174,12 +174,12 @@ int main(int argc, char *argv[])
 		return 10;
 	}
 
-	if (want_meter_time)
-		show_meter_rtc(meter);
 	if (want_meter_serial)
 		show_meter_serial(meter);
 	if (want_meter_version)
 		show_meter_version(meter);
+	if (want_meter_time)
+		show_meter_rtc(meter);
 
 
 	if (want_raw_records) {
