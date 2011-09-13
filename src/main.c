@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 	};
 
 
-	while (-1 != (c = getopt_long(argc, argv, "Dd:hrsVvZ", long_options, NULL))) {
+	while (-1 != (c = getopt_long(argc, argv, "D:dhrsVvZ", long_options, NULL))) {
 		switch (c) {
 		case 'D': // --device
 			free(device);
