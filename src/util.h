@@ -53,7 +53,7 @@ char *xstrdup_asciify(const unsigned char *p, unsigned int len);
 char *strdup_hexdump(const unsigned char *p, unsigned int len);
 char *xstrdup_hexdump(const unsigned char *p, unsigned int len);
 
-void *xmalloc(size_t size);
+void *xzalloc(size_t size);
 char *xstrdup(const char *str);
 
 char *strdup_printf(const char *fmt, ...);

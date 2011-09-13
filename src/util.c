@@ -165,7 +165,7 @@ void lprintf(FILE *f, const char *fmt, ...)
 	}
 }
 
-void *xmalloc(size_t size)
+void *xzalloc(size_t size)
 {
 	void *m = calloc(1, size);
 	if (NULL == m)

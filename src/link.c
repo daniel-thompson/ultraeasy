@@ -535,7 +535,7 @@ link_t *link_open(const char *pathname)
 	link_t *link;
 	int res;
 
-	link = xmalloc(sizeof(link_t));
+	link = xzalloc(sizeof(link_t));
 
 	if (0 != strcmp(pathname, "facade")) {
 		link->fd = open(pathname, O_RDWR);

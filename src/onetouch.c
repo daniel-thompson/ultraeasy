@@ -79,7 +79,7 @@ static uint32_t get_u32(unsigned char *p)
 
 onetouch_t *onetouch_open(const char *pathname)
 {
-	onetouch_t *onetouch = xmalloc(sizeof(onetouch_t));
+	onetouch_t *onetouch = xzalloc(sizeof(onetouch_t));
 
 	onetouch->link = link_open(pathname);
 	if (NULL == onetouch->link) {
@@ -115,7 +115,7 @@ char *onetouch_read_version(onetouch_t *onetouch)
 	if (0 != res)
 		return NULL;
 
-	char *version = xmalloc(reply.len);
+	char *version = xzalloc(reply.len);
 	memcpy(version, reply.data + sizeof(replystr), reply.len - sizeof(replystr));
 	version[reply.len - sizeof(replystr)] = '\0';
 
@@ -138,7 +138,7 @@ char *onetouch_read_serial(onetouch_t *onetouch)
 	if (0 != res)
 		return NULL;
 
-	char *version = xmalloc(reply.len);
+	char *version = xzalloc(reply.len);
 	memcpy(version, reply.data + sizeof(replystr), reply.len - sizeof(replystr));
 	version[reply.len - sizeof(replystr)] = '\0';
 
