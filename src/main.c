@@ -121,9 +121,12 @@ static void show_meter_serial(onetouch_t *meter)
 	free(serial);
 }
 
+const char usage_text[] = "Usage: onetouch [OPTION]...\n";
+
 static void show_usage()
 {
-	fprintf(stderr, "USAGE: onetouch [OPTION]...\n");
+	fprintf(stderr, usage_text);
+	fprintf(stderr, "Try '--help'.\n");
 }
 
 static void show_version()
@@ -133,8 +136,27 @@ static void show_version()
 
 static void show_help()
 {
-	show_usage();
-	show_version();
+	printf(usage_text);
+
+	printf(
+"Extract and display data from a Onetouch UltraEasy blood glucose\n"
+"monitor.\n"
+"\n"
+"Mandatory arguments to long options are mandatory for short options too.\n"
+"  -c, --csv                  extract meter readings in CSV format\n"
+"  -D, --device=DEVICE        choose a serial device (default: /dev/ttyUSB0)\n"
+"  -d, --dump                 show meter readings in plain text\n"
+"  -h, --help                 show this help text and exit\n"
+"  -t, --meter-time           show the meter's clock (time and date)\n"
+"  -s, --meter-serial         show the meter's serial number\n"
+"  -r, --meter-version        show the meter's version information\n"
+"  -R, --raw                  show raw meter readings in hex format\n"
+"  -v, --verbose              increase the level of internal logging\n"
+"                             (can be supplied several times)\n"
+"  -v, --version              output version information and exit\n"
+"\n"
+	);
+
 }
 
 
@@ -165,7 +187,7 @@ int main(int argc, char *argv[])
 	};
 
 
-	while (-1 != (c = getopt_long(argc, argv, "cD:dhrsVvZ", long_options, NULL))) {
+	while (-1 != (c = getopt_long(argc, argv, "cD:dhtsrRVvZ", long_options, NULL))) {
 		switch (c) {
 		case 'c': // --csv
 			dumpfn = show_csv_reading;
@@ -219,6 +241,11 @@ int main(int argc, char *argv[])
 	if (bad_args || optind < argc) {
 		show_usage();
 		return 1;
+	}
+
+	if (!dumpfn && !want_meter_time && !want_meter_version && !want_meter_serial) {
+		fprintf(stderr, "No action requested\nTry '--help'\n");
+		return 2;
 	}
 
 	onetouch_t *meter;
