@@ -1,0 +1,90 @@
+#
+# Driver for Lifescan OneTouch UltraEasy
+# Copyright (C) 2011 Daniel Thompson
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+#
+# This is some boilerplate from the "goat book" to get the test running in a
+# shell that supports functions. Its never been tested in anger because by
+# /bin/sh is bash...
+# See http://sourceware.org/autobook/autobook/autobook_214.html
+#
+
+# Zsh is not Bourne compatible without the following:
+if test -n "$ZSH_VERSION"; then
+  emulate sh
+  NULLCMD=:
+fi
+
+# Bash is not POSIX compliant without the following:
+test -n "$BASH_VERSION" && set -o posix
+
+SHELL="${SHELL-/bin/sh}"
+if test x"$1" = x--re-executed; then
+  # Functional shell was found.  Remove option and continue
+  shift
+elif "$SHELL" -c 'foo () { exit 0; }; foo' 2>/dev/null; then
+  # The current shell works already!
+  :
+else
+  # Try alternative shells that (sometimes) support functions
+  for cmd in sh bash ash bsh ksh zsh sh5; do
+    set `IFS=:; X="$PATH:/bin:/usr/bin:/usr/afsws/bin:/usr/ucb"; echo $X`
+    for dir; do
+      shell="$dir/$cmd"
+      if (test -f "$shell" || test -f "$shell.exe") &&
+        "$shell" -c 'foo () { exit 0; }; foo' 2>/dev/null
+      then
+        # Re-execute with discovered functional shell
+        SHELL="$shell" exec "$shell" "$0" --re-executed ${1+"$@"}
+      fi
+    done
+  done
+  echo "Unable to locate a shell interpreter with function support" >&2
+  exit 1
+fi
+
+
+#
+# Derive the program name and report that we are running a test
+#
+
+testname=`echo "$0" | sed 's,^.*/,,'`
+echo "=== Running test $testname"
+
+
+#
+# Provide some useful common definitions for use in the tests
+#
+
+CMP="${CMP-cmp}"
+ONETOUCH="../src/onetouch -Dfacade"
+
+assert_identical() {
+  if ${CMP} -s $1 $2; then
+    :
+  else
+    echo "FAILED:" >&2
+    cat $1 >&2
+    exit 1
+  fi
+}
+
+assert_empty () {
+  rm -f emptyfile.stdout
+  touch emptyfile.stdout
+  assert_identical $1 emptyfile.stdout
+}

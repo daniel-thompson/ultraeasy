@@ -13,6 +13,6 @@ AS_IF([test "x$ac_cv_prog_cc_c99" = xno], [AC_MSG_ERROR([compiler does not suppo
 AC_DEFINE([_POSIX_C_SOURCE], [199309L])
 AC_SEARCH_LIBS([clock_gettime], [rt])  
 
-AC_CONFIG_FILES(Makefile src/Makefile)
+AC_CONFIG_FILES(Makefile src/Makefile test/Makefile)
 AC_OUTPUT
 

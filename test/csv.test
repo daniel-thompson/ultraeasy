@@ -1,0 +1,19 @@
+## -*- sh -*-
+## csv.test -- Test --csv
+
+# Common definitions
+if test -z "$srcdir"; then
+    srcdir=`echo "$0" | sed 's,[^/]*$,,'`
+    test "$srcdir" = "$0" && srcdir=.
+    test -z "$srcdir" && srcdir=.
+    test "${VERBOSE+set}" != set && VERBOSE=1
+fi
+. $srcdir/defs
+
+$ONETOUCH --csv > csv.stdout 2> csv.stderr
+assert_identical csv.stdout $srcdir/csv.expout
+assert_empty csv.stderr
+
+$ONETOUCH -c > c.stdout 2> c.stderr
+assert_identical c.stdout $srcdir/csv.expout
+assert_empty c.stderr

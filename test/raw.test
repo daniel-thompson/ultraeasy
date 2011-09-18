@@ -1,0 +1,19 @@
+## -*- sh -*-
+## raw.test -- Test --raw
+
+# Common definitions
+if test -z "$srcdir"; then
+    srcdir=`echo "$0" | sed 's,[^/]*$,,'`
+    test "$srcdir" = "$0" && srcdir=.
+    test -z "$srcdir" && srcdir=.
+    test "${VERBOSE+set}" != set && VERBOSE=1
+fi
+. $srcdir/defs
+
+$ONETOUCH --raw > raw.stdout 2> raw.stderr
+assert_identical raw.stdout $srcdir/raw.expout
+assert_empty raw.stderr
+
+$ONETOUCH -R > R.stdout 2> R.stderr
+assert_identical R.stdout $srcdir/raw.expout
+assert_empty R.stderr
