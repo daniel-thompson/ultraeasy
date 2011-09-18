@@ -10,10 +10,10 @@ if test -z "$srcdir"; then
 fi
 . $srcdir/defs
 
-$ONETOUCH --dump > dump.stdout 2> dump.stderr
+$ULTRAEASY --dump > dump.stdout 2> dump.stderr
 assert_identical dump.stdout $srcdir/dump.expout
 assert_empty dump.stderr
 
-$ONETOUCH -d > d.stdout 2> d.stderr
+$ULTRAEASY -d > d.stdout 2> d.stderr
 assert_identical d.stdout $srcdir/dump.expout
 assert_empty d.stderr

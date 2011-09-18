@@ -35,7 +35,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = onetouch$(EXEEXT)
+bin_PROGRAMS = ultraeasy$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -47,10 +47,10 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_onetouch_OBJECTS = main.$(OBJEXT) onetouch.$(OBJEXT) link.$(OBJEXT) \
-	util.$(OBJEXT) facade.$(OBJEXT)
-onetouch_OBJECTS = $(am_onetouch_OBJECTS)
-onetouch_LDADD = $(LDADD)
+am_ultraeasy_OBJECTS = main.$(OBJEXT) ultraeasy.$(OBJEXT) \
+	ue_link.$(OBJEXT) util.$(OBJEXT) facade.$(OBJEXT)
+ultraeasy_OBJECTS = $(am_ultraeasy_OBJECTS)
+ultraeasy_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -59,8 +59,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(onetouch_SOURCES)
-DIST_SOURCES = $(onetouch_SOURCES)
+SOURCES = $(ultraeasy_SOURCES)
+DIST_SOURCES = $(ultraeasy_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -159,7 +159,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-onetouch_SOURCES = main.c onetouch.c link.c util.c facade.c
+ultraeasy_SOURCES = main.c ultraeasy.c ue_link.c util.c facade.c
 all: all-am
 
 .SUFFIXES:
@@ -231,9 +231,9 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-onetouch$(EXEEXT): $(onetouch_OBJECTS) $(onetouch_DEPENDENCIES) 
-	@rm -f onetouch$(EXEEXT)
-	$(LINK) $(onetouch_OBJECTS) $(onetouch_LDADD) $(LIBS)
+ultraeasy$(EXEEXT): $(ultraeasy_OBJECTS) $(ultraeasy_DEPENDENCIES) 
+	@rm -f ultraeasy$(EXEEXT)
+	$(LINK) $(ultraeasy_OBJECTS) $(ultraeasy_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -242,9 +242,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/facade.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/onetouch.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ue_link.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ultraeasy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
 
 .c.o:

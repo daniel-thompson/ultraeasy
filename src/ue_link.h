@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LINK_H_
+#ifndef UE_LINK_H_
+#define UE_LINK_H_
 
 #define LINK_MAX_MSG_LEN 34
 
@@ -32,4 +33,4 @@ int link_reset(link_t *link);
 int link_command(link_t *link, link_msg_t *input, link_msg_t *output);
 void link_close(link_t *link);
 
-#endif // LINK_H_
+#endif // UE_LINK_H_

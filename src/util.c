@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#define _XOPEN_SOURCE 500
+
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>

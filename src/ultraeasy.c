@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "onetouch.h"
+#include "ultraeasy.h"
 #include "util.h"
 
 struct onetouch {

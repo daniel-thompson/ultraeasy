@@ -22,7 +22,7 @@
 #include <stdint.h>
 #include <time.h>
 
-#include "link.h"
+#include "ue_link.h"
 
 typedef struct onetouch onetouch_t;
 

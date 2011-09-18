@@ -24,7 +24,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "onetouch.h"
+#include "ultraeasy.h"
 #include "util.h"
 
 typedef void (*foreach_reading_t)(void *, onetouch_record_t *);

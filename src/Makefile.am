@@ -1,3 +1,3 @@
-bin_PROGRAMS=onetouch
-onetouch_SOURCES=main.c onetouch.c link.c util.c facade.c
+bin_PROGRAMS=ultraeasy
+ultraeasy_SOURCES=main.c ultraeasy.c ue_link.c util.c facade.c
 

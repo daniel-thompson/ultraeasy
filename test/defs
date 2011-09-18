@@ -71,7 +71,7 @@ echo "=== Running test $testname"
 #
 
 CMP="${CMP-cmp}"
-ONETOUCH="../src/onetouch -Dfacade"
+ULTRAEASY="../src/ultraeasy -Dfacade"
 
 assert_identical() {
   if ${CMP} -s $1 $2; then
