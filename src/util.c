@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define _XOPEN_SOURCE 500
-
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
@@ -38,7 +36,7 @@ void tracefn(int level, const char *fn, const char *prefix, const char *fmt, ...
 		return;
 
 	if (trace_level <= 2)
-		fn = "onetouch";
+		fn = PACKAGE;
 
 	fprintf(stderr, "%s: %s", fn, prefix);
 	va_start(ap, fmt);
