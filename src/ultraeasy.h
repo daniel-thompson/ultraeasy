@@ -16,17 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ONETOUCH_H_
-#define ONETOUCH_H_
+#ifndef ULTRAEASY_H_
+#define ULTRAEASY_H_
 
 #include <stdint.h>
 #include <time.h>
 
 #include "ue_link.h"
 
-typedef struct onetouch onetouch_t;
+typedef struct ultraeasy ultraeasy_t;
 
-typedef struct onetouch_record {
+typedef struct ultraeasy_record {
 	time_t date;
 	double mmol_per_litre;
 
@@ -34,14 +34,14 @@ typedef struct onetouch_record {
 		uint32_t date;
 		uint32_t reading;
 	} raw;
-} onetouch_record_t;
+} ultraeasy_record_t;
 
-onetouch_t *onetouch_open(const char *pathname);
-time_t onetouch_read_rtc(onetouch_t *onetouch);
-char *onetouch_read_serial(onetouch_t *onetouch);
-char *onetouch_read_version(onetouch_t *onetouch);
-int onetouch_num_records(onetouch_t *onetouch);
-int onetouch_get_record(onetouch_t *onetouch, unsigned int num, onetouch_record_t *record);
-void onetouch_close(onetouch_t *onetouch);
+ultraeasy_t *ultraeasy_open(const char *pathname);
+time_t ultraeasy_read_rtc(ultraeasy_t *ultraeasy);
+char *ultraeasy_read_serial(ultraeasy_t *ultraeasy);
+char *ultraeasy_read_version(ultraeasy_t *ultraeasy);
+int ultraeasy_num_records(ultraeasy_t *ultraeasy);
+int ultraeasy_get_record(ultraeasy_t *ultraeasy, unsigned int num, ultraeasy_record_t *record);
+void ultraeasy_close(ultraeasy_t *ultraeasy);
 
-#endif /* ONETOUCH_H_ */
+#endif /* ULTRAEASY_H_ */

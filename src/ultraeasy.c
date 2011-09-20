@@ -24,11 +24,11 @@
 #include "ultraeasy.h"
 #include "util.h"
 
-struct onetouch {
+struct ultraeasy {
 	link_t *link;
 };
 
-static int do_command(onetouch_t *onetouch,
+static int do_command(ultraeasy_t *ultraeasy,
 		      const unsigned char *cmdstr, unsigned int cmdlen,
 		      const unsigned char *replystr, unsigned int replylen,
 		      unsigned int expectedlen, link_msg_t *reply)
@@ -39,7 +39,7 @@ static int do_command(onetouch_t *onetouch,
 	memcpy(cmd.data, cmdstr, cmdlen);
 	cmd.len = cmdlen;
 
-	res = link_command(onetouch->link, &cmd, reply);
+	res = link_command(ultraeasy->link, &cmd, reply);
 	if (0 != res)
 		return res;
 
@@ -77,13 +77,13 @@ static uint32_t get_u32(unsigned char *p)
 	return (p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0];
 }
 
-onetouch_t *onetouch_open(const char *pathname)
+ultraeasy_t *ultraeasy_open(const char *pathname)
 {
-	onetouch_t *onetouch = xzalloc(sizeof(onetouch_t));
+	ultraeasy_t *ultraeasy = xzalloc(sizeof(ultraeasy_t));
 
-	onetouch->link = link_open(pathname);
-	if (NULL == onetouch->link) {
-		free(onetouch);
+	ultraeasy->link = link_open(pathname);
+	if (NULL == ultraeasy->link) {
+		free(ultraeasy);
 		return NULL;
 	}
 
@@ -96,33 +96,33 @@ onetouch_t *onetouch_open(const char *pathname)
 	// Eventually we'll get the facade to understand E & S bits and then
 	// we can remove this hack.
 	if (0 == strcmp(pathname, "facade"))
-		free(onetouch_read_serial(onetouch));
+		free(ultraeasy_read_serial(ultraeasy));
 
-	return onetouch;;
+	return ultraeasy;
 }
 
-time_t onetouch_read_rtc(onetouch_t *onetouch)
+time_t ultraeasy_read_rtc(ultraeasy_t *ultraeasy)
 {
 	const unsigned char cmdstr[] = { 0x05, 0x20, 0x02, 0x00, 0x00, 0x00, 0x00 };
 	const unsigned char replystr[] = { 0x05, 0x06 };
 
 	link_msg_t reply;
 
-	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 6, &reply);
+	int res = do_command(ultraeasy, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 6, &reply);
 	if (0 != res)
 		return (time_t) -1;
 
 	return get_u32(reply.data + 2);
 }
 
-char *onetouch_read_version(onetouch_t *onetouch)
+char *ultraeasy_read_version(ultraeasy_t *ultraeasy)
 {
 	const unsigned char cmdstr[] = { 0x05, 0x0d, 0x02 };
 	const unsigned char replystr[] = { 0x05, 0x06, 0x11 };
 
 	link_msg_t reply;
 
-	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 0, &reply);
+	int res = do_command(ultraeasy, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 0, &reply);
 	if (0 != res)
 		return NULL;
 
@@ -133,7 +133,7 @@ char *onetouch_read_version(onetouch_t *onetouch)
 	return version;
 }
 
-char *onetouch_read_serial(onetouch_t *onetouch)
+char *ultraeasy_read_serial(ultraeasy_t *ultraeasy)
 {
 #if 1
 	const unsigned char cmdstr[] = { 0x05, 0x0b, 0x02, 0x00, 0x00, 0x00, 0x00,
@@ -145,7 +145,7 @@ char *onetouch_read_serial(onetouch_t *onetouch)
 
 	link_msg_t reply;
 
-	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 0, &reply);
+	int res = do_command(ultraeasy, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 0, &reply);
 	if (0 != res)
 		return NULL;
 
@@ -156,7 +156,7 @@ char *onetouch_read_serial(onetouch_t *onetouch)
 	return version;
 }
 
-int onetouch_num_records(onetouch_t *onetouch)
+int ultraeasy_num_records(ultraeasy_t *ultraeasy)
 {
 #if 0
 	const unsigned char cmdstr[] = { 0x05, 0x1f, 0xf5, 0x01 };
@@ -166,14 +166,14 @@ int onetouch_num_records(onetouch_t *onetouch)
 	const unsigned char replystr[] = { 0x05, 0x0f };
 	link_msg_t reply;
 
-	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 4, &reply);
+	int res = do_command(ultraeasy, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 4, &reply);
 	if (0 != res)
 		return -1;
 
 	return get_u16(reply.data + 2);
 }
 
-int onetouch_get_record(onetouch_t *onetouch, unsigned int num, onetouch_record_t *record)
+int ultraeasy_get_record(ultraeasy_t *ultraeasy, unsigned int num, ultraeasy_record_t *record)
 {
 	unsigned char cmdstr[] = { 0x05, 0x1f, 0x00, 0x00 };
 	const unsigned char replystr[] = { 0x05, 0x06 };
@@ -185,7 +185,7 @@ int onetouch_get_record(onetouch_t *onetouch, unsigned int num, onetouch_record_
 	cmdstr[2] = num & 0xff;
 	cmdstr[3] = (num >> 8) & 0xff;
 
-	int res = do_command(onetouch, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 10, &reply);
+	int res = do_command(ultraeasy, cmdstr, sizeof(cmdstr), replystr, sizeof(replystr), 10, &reply);
 	if (0 != res)
 		return -1;
 
@@ -198,8 +198,8 @@ int onetouch_get_record(onetouch_t *onetouch, unsigned int num, onetouch_record_
 	return 0;
 }
 
-void onetouch_close(onetouch_t *onetouch)
+void ultraeasy_close(ultraeasy_t *ultraeasy)
 {
-	link_close(onetouch->link);
-	free(onetouch);
+	link_close(ultraeasy->link);
+	free(ultraeasy);
 }

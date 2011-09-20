@@ -27,19 +27,19 @@
 #include "ultraeasy.h"
 #include "util.h"
 
-typedef void (*foreach_reading_t)(void *, onetouch_record_t *);
+typedef void (*foreach_reading_t)(void *, ultraeasy_record_t *);
 
-static int foreach_reading(onetouch_t *meter, foreach_reading_t fn, void *ctx)
+static int foreach_reading(ultraeasy_t *meter, foreach_reading_t fn, void *ctx)
 {
-	int n = onetouch_num_records(meter);
+	int n = ultraeasy_num_records(meter);
 	if (n < 0) {
 		fprintf(stderr, "Cannot read number of records: %s\n", strerror(errno));
 		return -1;
 	}
 
 	for (int i=0; i<n; i++) {
-		onetouch_record_t record;
-		int res = onetouch_get_record(meter, i, &record);
+		ultraeasy_record_t record;
+		int res = ultraeasy_get_record(meter, i, &record);
 		if (res < 0) {
 			fprintf(stderr, "Cannot read record %d: %s\n", i, strerror(errno));
 			return -1;
@@ -51,13 +51,13 @@ static int foreach_reading(onetouch_t *meter, foreach_reading_t fn, void *ctx)
 	return 0;
 }
 
-static void show_raw_reading(void *ctx, onetouch_record_t *reading)
+static void show_raw_reading(void *ctx, ultraeasy_record_t *reading)
 {
 	printf("Raw date 0x%08x   Raw reading 0x%08x\n",
 			reading->raw.date, reading->raw.reading);
 }
 
-static void show_reading(void *ctx, onetouch_record_t *reading)
+static void show_reading(void *ctx, ultraeasy_record_t *reading)
 {
 	struct tm exploded;
 	gmtime_r(&reading->date, &exploded);
@@ -68,7 +68,7 @@ static void show_reading(void *ctx, onetouch_record_t *reading)
 			reading->mmol_per_litre);
 }
 
-static void show_csv_reading(void *ctx, onetouch_record_t *reading)
+static void show_csv_reading(void *ctx, ultraeasy_record_t *reading)
 {
 	struct tm exploded;
 	gmtime_r(&reading->date, &exploded);
@@ -79,12 +79,12 @@ static void show_csv_reading(void *ctx, onetouch_record_t *reading)
 				reading->mmol_per_litre);
 }
 
-static void show_meter_rtc(onetouch_t *meter)
+static void show_meter_rtc(ultraeasy_t *meter)
 {
 	time_t local, rtc;
 
 	local = time(NULL);
-	rtc = onetouch_read_rtc(meter);
+	rtc = ultraeasy_read_rtc(meter);
 	if ((time_t) -1 == rtc) {
 		fprintf(stderr, "Cannot read meter real time clock: %s\n", strerror(errno));
 	}
@@ -93,11 +93,11 @@ static void show_meter_rtc(onetouch_t *meter)
 			(long long) rtc, (long long) local, (long long) (local - rtc));
 }
 
-static void show_meter_version(onetouch_t *meter)
+static void show_meter_version(ultraeasy_t *meter)
 {
 	char *version;
 
-	version = onetouch_read_version(meter);
+	version = ultraeasy_read_version(meter);
 	if (NULL == version) {
 		fprintf(stderr, "Cannot read meter version number: %s\n", strerror(errno));
 		version = xstrdup("(error)");
@@ -107,11 +107,11 @@ static void show_meter_version(onetouch_t *meter)
 	free(version);
 }
 
-static void show_meter_serial(onetouch_t *meter)
+static void show_meter_serial(ultraeasy_t *meter)
 {
 	char *serial;
 
-	serial = onetouch_read_serial(meter);
+	serial = ultraeasy_read_serial(meter);
 	if (NULL == serial) {
 		fprintf(stderr, "Cannot read meter serial number: %s\n", strerror(errno));
 		serial = xstrdup("(error)");
@@ -121,7 +121,7 @@ static void show_meter_serial(onetouch_t *meter)
 	free(serial);
 }
 
-const char usage_text[] = "Usage: onetouch [OPTION]...\n";
+const char usage_text[] = "Usage: " PACKAGE " [OPTION]...\n";
 
 static void show_usage()
 {
@@ -131,7 +131,7 @@ static void show_usage()
 
 static void show_version()
 {
-	fprintf(stderr, "onetouch v0.1\n");
+	fprintf(stderr, "%s v%s\n", PACKAGE, VERSION);
 }
 
 static void show_help()
@@ -139,7 +139,7 @@ static void show_help()
 	printf(usage_text);
 
 	printf(
-"Extract and display data from a Onetouch UltraEasy blood glucose\n"
+"Extract and display data from a OneTouch UltraEasy blood glucose\n"
 "monitor.\n"
 "\n"
 "Mandatory arguments to long options are mandatory for short options too.\n"
@@ -248,9 +248,9 @@ int main(int argc, char *argv[])
 		return 2;
 	}
 
-	onetouch_t *meter;
+	ultraeasy_t *meter;
 
-	meter = onetouch_open(device);
+	meter = ultraeasy_open(device);
 	if (NULL == meter) {
 		fprintf(stderr, "Cannot connect to meter: %s\n", strerror(errno));
 		return 10;
@@ -269,6 +269,6 @@ int main(int argc, char *argv[])
 			return 12;
 	}
 
-	onetouch_close(meter);
+	ultraeasy_close(meter);
 	return 0;
 }
