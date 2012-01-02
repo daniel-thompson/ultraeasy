@@ -1,1 +1,40 @@
-Sample readme file for onetouch project.
+Driver for Lifescan OneTouch UltraEasy
+======================================
+
+Main tool
+---------
+
+For build instructions see INSTALL.
+
+Usage: ultraeasy [OPTION]...
+Extract and display data from a OneTouch UltraEasy blood glucose
+monitor.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -c, --csv                  extract meter readings in CSV format
+  -D, --device=DEVICE        choose a serial device (default: /dev/ttyUSB0)
+  -d, --dump                 show meter readings in plain text
+  -h, --help                 show this help text and exit
+  -t, --meter-time           show the meter's clock (time and date)
+  -s, --meter-serial         show the meter's serial number
+  -r, --meter-version        show the meter's version information
+  -R, --raw                  show raw meter readings in hex format
+  -v, --verbose              increase the level of internal logging
+                             (can be supplied several times)
+  -v, --version              output version information and exit
+
+
+Scripts
+-------
+
+The scripts/ directory contains some additional tools that interoperate with
+the main tool.
+
+The role to the scripts is to archive (and merge) the output of the main tool
+into a "ASCII database" of readings.
+
+Examples:
+  ultraeasy --dump | ue-dbupdate
+  ue-dbdump | ue-db2sheet > converted.csv
+
+
