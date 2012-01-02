@@ -18,7 +18,7 @@
 
 #
 # This is some boilerplate from the "goat book" to get the test running in a
-# shell that supports functions. Its never been tested in anger because by
+# shell that supports functions. Its never been tested in anger because my
 # /bin/sh is bash...
 # See http://sourceware.org/autobook/autobook/autobook_214.html
 #
