@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+#
+# Driver for Lifescan OneTouch UltraEasy
+# Copyright (C) 2011 Daniel Thompson
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+import sys
+
+def new_day(date):
+	d = [ date ]
+	for i in range(25):
+		d.append("")
+	return d
+
+def issue_day(d):
+	line = ''
+	for atom in d:
+		line = line + '"' + atom + '",'
+	line.rstrip(',')
+	print line
+
+day = [ "Date" ]
+for i in range(24):
+	day.append(str(i)+':00')
+day.append("Additional readings")
+
+
+for ln in sys.stdin.readlines():
+	ln.rstrip()
+
+	(date, time, reading, unit) = ln.split()
+	#(year, month, day) = date.split('-')
+	(hour, minute, second) = time.split(':')
+	hour = int(hour)
+	#reading = float(reading)
+
+	if date != day[0]:
+		issue_day(day)
+		day = new_day(date)
+	
+	if day[1 + hour] == '':
+		day[1 + hour] = reading
+	elif day[25] == '':
+		day[25] = time + ' ' + reading
+	else:
+		day[25] = day[25] + ', ' + time + ' ' + reading
+		
+
+issue_day(day)
