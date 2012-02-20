@@ -28,7 +28,11 @@ def new_day(date):
 def issue_day(d):
 	line = ''
 	for atom in d:
-		line = line + '"' + atom + '",'
+		try:
+			reading = float(atom)
+			line = line + atom + ','
+		except:
+			line = line + '"' + atom + '",'
 	line.rstrip(',')
 	print line
 
