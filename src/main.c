@@ -151,7 +151,7 @@ static void show_help()
 "  -s, --meter-serial         show the meter's serial number\n"
 "  -r, --meter-version        show the meter's version information\n"
 "  -R, --raw                  show raw meter readings in hex format\n"
-"  -v, --verbose              increase the level of internal logging\n"
+"  -V, --verbose              increase the level of internal logging\n"
 "                             (can be supplied several times)\n"
 "  -v, --version              output version information and exit\n"
 "\n"

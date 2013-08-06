@@ -19,7 +19,7 @@ Mandatory arguments to long options are mandatory for short options too.
   -s, --meter-serial         show the meter's serial number
   -r, --meter-version        show the meter's version information
   -R, --raw                  show raw meter readings in hex format
-  -v, --verbose              increase the level of internal logging
+  -V, --verbose              increase the level of internal logging
                              (can be supplied several times)
   -v, --version              output version information and exit
 
