@@ -1,0 +1,9 @@
+aclocal.m4
+configure
+test-driver
+Makefile.in
+autom4te.cache/
+build/
+build-Debug_(GNU)/
+logs/
+*~
