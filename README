@@ -1,5 +1,10 @@
-Driver for Lifescan OneTouch UltraEasy
-======================================
+Third party driver for Lifescan OneTouch UltraEasy
+==================================================
+
+This software is not made by or endorsed in any way by Lifescan.
+All trademarks, including Lifescan and OneTouch, are the property of
+their respective owners.
+
 
 Main tool
 ---------
@@ -37,4 +42,42 @@ Examples:
   ultraeasy --dump | ue-dbupdate
   ue-dbdump | ue-db2sheet > converted.csv
 
+
+Building
+--------
+
+From a distributed package the build process is the standard GNU autotools
+approach:
+
+  ./configure
+  make
+  make check
+  make install
+
+If you obtained this program via git you must generate the configure script
+and Makefile templates first:
+
+  autoreconf -i
+
+
+Testing
+-------
+
+This program includes a built in facade (fake meter) for testing
+purposes. It can be activated using --driver=facade. The build system
+includes the command "make check" which will run a simple test suite
+using the fake mater as a target. It is strongly recommended that this
+test suite be run whenever the program is recompiled.
+
+The low level hardware communications parts of the driver, which cannot
+be tested using the facade were tested by comparing the output of the 
+program with the readings actual meters displayed on their LCDs. Tests 
+were performed on three different meters.  All three where UK versions 
+of the meter and, between them, were running two different versions of 
+the firmware.
+
+Please note that this program is distributed in the hope that it will
+be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
 
