@@ -1,0 +1,11 @@
+Source: ultraeasy
+Maintainer: Jorge Niedbalski <jnr@metaklass.org>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9), devscripts (>= 2.10.7), dh-autoreconf
+
+Package: ultraeasy
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Third party driver for Lifescan OneTouch UltraEasy.
