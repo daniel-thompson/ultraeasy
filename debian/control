@@ -2,10 +2,22 @@ Source: ultraeasy
 Maintainer: Jorge Niedbalski <jnr@metaklass.org>
 Section: misc
 Priority: optional
-Standards-Version: 3.9.2
+Standards-Version: 3.9.4
 Build-Depends: debhelper (>= 9), devscripts (>= 2.10.7), dh-autoreconf
+
+Package: libultraeasy
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Library to interact with the LifeScan Onetouch UltraEasy driver.
+
+Package: libultraeasy-dev
+Section: libdevel
+Architecture: any
+Depends: libultraeasy (= ${binary:Version}), ${misc:Depends}
+Description: Headers files for libultraeasy
 
 Package: ultraeasy
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: libultraeasy (= ${binary:Version}), ${misc:Depends}
 Description: Third party driver for Lifescan OneTouch UltraEasy.
