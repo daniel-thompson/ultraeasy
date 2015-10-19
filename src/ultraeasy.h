@@ -24,6 +24,10 @@
 
 #include "ue_link.h"
 
+#ifdef __cplusplus
+extern “C” {
+#endif
+
 typedef struct ultraeasy ultraeasy_t;
 
 typedef struct ultraeasy_record {
@@ -44,4 +48,7 @@ int ultraeasy_num_records(ultraeasy_t *ultraeasy);
 int ultraeasy_get_record(ultraeasy_t *ultraeasy, unsigned int num, ultraeasy_record_t *record);
 void ultraeasy_close(ultraeasy_t *ultraeasy);
 
+#ifdef  __cplusplus
+}
+#endif
 #endif /* ULTRAEASY_H_ */
