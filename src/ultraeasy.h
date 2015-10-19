@@ -24,6 +24,10 @@
 
 #include "ue_link.h"
 
+#ifdef __cplusplus
+extern “C” {
+#endif
+
 typedef struct ultraeasy ultraeasy_t;
 
 typedef struct ultraeasy_record {
@@ -36,12 +40,15 @@ typedef struct ultraeasy_record {
 	} raw;
 } ultraeasy_record_t;
 
-ultraeasy_t *ultraeasy_open(const char *pathname);
+extern ultraeasy_t *ultraeasy_open(const char *pathname);
 time_t ultraeasy_read_rtc(ultraeasy_t *ultraeasy);
 char *ultraeasy_read_serial(ultraeasy_t *ultraeasy);
-char *ultraeasy_read_version(ultraeasy_t *ultraeasy);
-int ultraeasy_num_records(ultraeasy_t *ultraeasy);
-int ultraeasy_get_record(ultraeasy_t *ultraeasy, unsigned int num, ultraeasy_record_t *record);
-void ultraeasy_close(ultraeasy_t *ultraeasy);
+extern char *ultraeasy_read_version(ultraeasy_t *ultraeasy);
+extern int ultraeasy_num_records(ultraeasy_t *ultraeasy);
+extern int ultraeasy_get_record(ultraeasy_t *ultraeasy, unsigned int num, ultraeasy_record_t *record);
+extern void ultraeasy_close(ultraeasy_t *ultraeasy);
 
+#ifdef  __cplusplus
+}
+#endif
 #endif /* ULTRAEASY_H_ */
