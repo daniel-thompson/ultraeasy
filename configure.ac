@@ -3,6 +3,9 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.59)
 AC_INIT(ultraeasy, 1.0)
 
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+
+LT_INIT
 
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE([-Wall])
@@ -16,4 +19,3 @@ AC_SEARCH_LIBS([clock_gettime], [rt])
 
 AC_CONFIG_FILES(Makefile src/Makefile test/Makefile)
 AC_OUTPUT
-
