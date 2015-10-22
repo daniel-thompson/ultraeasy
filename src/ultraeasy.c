@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include "ultraeasy.h"
+#include "ue_link.h"
 #include "util.h"
 
 struct ultraeasy {

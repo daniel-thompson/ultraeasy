@@ -22,8 +22,6 @@
 #include <stdint.h>
 #include <time.h>
 
-#include "ue_link.h"
-
 #ifdef __cplusplus
 extern “C” {
 #endif
