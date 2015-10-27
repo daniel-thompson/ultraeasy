@@ -2,14 +2,14 @@
 
 import sys
 
-glue=''
+glue = ""
+
 for line in sys.stdin.readlines():
-	line = line.rstrip()
-	if len(line) == 2:
-		glue = glue + line
-	else:
-		if glue != '':
-			print glue
-			glue = ''
-		print line
-	
+        line = line.rstrip()
+        if len(line) == 2:
+                glue = glue + line
+        else:
+                if glue != '':
+                        print glue
+                        glue = ""
+                print line

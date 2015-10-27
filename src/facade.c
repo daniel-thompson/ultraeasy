@@ -159,7 +159,7 @@ void facade_tx_packet(unsigned char *p, unsigned int len)
 int facade_rx_packet(unsigned char *p, unsigned int len)
 {
 	if (!next_packet) {
-		DEBUG("No packet availabe\n");
+		DEBUG("No packet available\n");
 		errno = ENOLINK;
 		return -1;
 	}
