@@ -42,7 +42,7 @@ uint64_t ms_gettime(clockid_t clk_id);
 /**
  * printf() to log file
  *
- * Appart from the void return type this function acts identically to
+ * Apart from the void return type this function acts identically to
  * fprintf() when the argument is non-NULL. When the argument is NULL the
  * function is a no-op.
  */
